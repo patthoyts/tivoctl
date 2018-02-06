@@ -22,10 +22,16 @@ def main():
     parser.add_argument("--port", type=int, help="TiVo Remote Protocol port number")
     parser.add_argument("--timeout", type=float,
                         help="socket timeout in seconds (0 = no timeout)")
-    parser.add_argument("command",
-                        help="one of IRCODE, KEYBOARD, TELEPORT or SETCH")
-    parser.add_argument("key", nargs="*",
-                        help="keys to be sent (e.g. KEY_VOLDOWN)")
+    parser.add_argument("--ircode", dest="cmd", action='store_const', const='ircode',
+                        help="send one or more IR codes.")
+    parser.add_argument("--keyboard", dest="cmd", action='store_const', const='keyboard',
+                        help="send one or more keyboard codes.")
+    parser.add_argument("--teleport", dest="cmd", action='store_const', const='teleport',
+                        help="switch to a defined screen (TIVO, LIVETV, NOWPLAYING or GUIDE).")
+    parser.add_argument("--set-channel", dest="cmd", action='store_const', const='setch',
+                        help="switch to a new channel number.")
+    parser.add_argument("params", nargs="*",
+                        help="parameters for the selected command (key or ir codes, a screen or channel)")
 
     args = parser.parse_args()
 
@@ -49,22 +55,22 @@ def main():
 
     try:
         remote = Remote(config)
-        if args.command == "IRCODE":
-            for key in args.key:
-                remote.send_ircode(key)
-        elif args.command == 'KEYBOARD':
-            for key in args.key:
+        if args.cmd == "ircode":
+            for code in args.params:
+                remote.send_ircode(code)
+        elif args.cmd == 'keyboard':
+            for key in args.params:
                 remote.send_keyboard(key)
-        elif args.command == 'TELEPORT':
-            remote.teleport(args.key[0])
-        elif args.command == 'SETCH':
-            remote.set_channel(args.key[0])
-        elif len(args.key) == 0:
-            logging.warning("Warning: No keys specified.")
+        elif args.cmd == 'teleport':
+            remote.teleport(args.params[0])
+        elif args.cmd == 'setch':
+            remote.set_channel(args.params[0])
+        elif len(args.params) == 0:
+            logging.warning("error: no parameters provided.")
     except socket.timeout:
-        logging.error("Error: Timed out!")
+        logging.error("error: timeout")
     except OSError as e:
-        logging.error("Error: %s", e.strerror)
+        logging.error("error: %s", e.strerror)
 
 if __name__ == "__main__":
     main()
