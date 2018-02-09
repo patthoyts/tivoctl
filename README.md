@@ -9,15 +9,19 @@ allows a TiVo Digital Video Recorder (DVR) to accept commands from the network e
 
 This package may be used from the command-line to send commands from scripts.
 
-tivoctl --host <host> [command-type] [command-options]
+    tivoctl --host <host> [command-type] [command-options]
 
-e.g.: tivoctl --host tivo --ircode INFO DOWN DOWN SELECT
-      tivoctl --host tivo2 --set-channel 101
-      tivoctl --host tivo --keyboard STANDBY
-      tivoctl --host tivo --teleport NOWPLAYING
+e.g.:
+
+    tivoctl --host tivo --ircode INFO DOWN DOWN SELECT
+    tivoctl --host tivo --set-channel 101
+    tivoctl --host tivo --keyboard STANDBY
+    tivoctl --host tivo --teleport NOWPLAYING
+    tivoctl --host tivo --get-channel
 
 
 ## Disclaimer
 
 Tivo® is a trademark of TiVo Inc.
+
 This software package is not affiliated with nor endorsed by TiVo Inc.
